@@ -1,0 +1,27 @@
+{
+  "name": "steamsales",
+  "version": "1.0.0",
+  "description": "Scraper and Mongo DB",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Larou-Tim/steamSales.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Larou-Tim/steamSales/issues"
+  },
+  "homepage": "https://github.com/Larou-Tim/steamSales#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cheerio": "^0.22.0",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^4.10.1",
+    "request": "^2.81.0"
+  }
+}
