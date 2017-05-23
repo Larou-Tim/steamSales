@@ -14,11 +14,12 @@
 
 {{!-- maybe add icon if its high rated, good deal? ect <i class="material-icons">filter_drama</i>--}}
         <li>
-          <div class="collapsible-header">{{this.game_name}} <span class="right"> ${{this.discount_price}} </span></div>
+          <div class="collapsible-header">{{this.game_name}} <span class="right"> {{#if this.good_deal}}  <i class="material-icons icon-orange">whatshot</i>  {{/if}} ${{this.discount_price}} </span></div>
           <div class="collapsible-body"><span>
-            <a class="waves-effect waves-light btn" target="_blank" href={{this.game_link}}>Go to Steam</a>
-            it is {{this.discount_pct}} off right now!
-            </span></div>
+            <img src={{this.game_image}} alt="game image">
+            <a class="waves-effect waves-light btn right" target="_blank" href={{this.game_link}}>Go to Steam</a>
+            it is {{this.discount_pct}} off right now! 
+            </span> <span> {{this.game_reviews}} </span></div>
         </li>
 
 

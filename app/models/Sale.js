@@ -18,6 +18,20 @@ var SaleSchema = new Schema({
         // required: true
     },
 
+    release_date: {
+        type: String
+        // required: true
+    },
+    game_reviews: {
+        type: String
+        // required: true
+    },
+
+    game_image: {
+        type: String
+        // required: true
+    },
+
     original_price: {
         type: Number
         // required: true
@@ -29,6 +43,10 @@ var SaleSchema = new Schema({
     discount_pct: {
         type: Number
         // required: true
+    },
+    
+    good_deal: {
+        type: Boolean
     },
     // This only saves one note's ObjectId, ref refers to the Note model
     note: {

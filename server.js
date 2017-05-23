@@ -63,75 +63,202 @@ db.once("open", function () {
 //change url to http://store.steampowered.com/search/?specials=1 (could do more than one page)
 // add rating and image?
 // lowest price seen
+
+
+
+// > a:nth-child(2)
+//
+//could be crazy double call to get additional info? not sure if it'll let me
+
 app.get("/findSales", function (req, res) {
-    request("http://store.steampowered.com/", function (error, response, html) {
-        var $ = cheerio.load(html);
-        var result = [];
-        $("#tab_specials_content").each(function (i, element) {
-            $("a.tab_item").each(function (j, inElement) {
+    for (var n = 1; n <= 5; n++) {
+        request("http://store.steampowered.com/search/?specials=1&page=" + n, function (error, response, html) {
+            var $ = cheerio.load(html);
+            var result = [];
+            $("#search_result_container > div:nth-child(2)").each(function (i, element) {
+                // var $this = $(this);
+                $(".search_result_row").each(function (j, inElement) {
+                    // $("a.tab_item").each(function (j, inElement) {
 
-                var link = $(this).attr("href");
+                    var link = $(this).attr("href");
 
-                var originalPrice = $(inElement).find(".discount_original_price").text()
-                var discountPrice = $(inElement).find(".discount_final_price").text()
-                var name = $(inElement).find(".tab_item_name").text()
-                var percent = Number($(inElement).find(".discount_pct").text())
+                    // var originalPrice = $(inElement).find(".discount_original_price").text()
 
-                originalPrice = Number(originalPrice.replace(/[^0-9\.]+/g, ""));
-                discountPrice = Number(discountPrice.replace(/[^0-9\.]+/g, ""));
-
-                var game = {
-                    game_name: name,
-                    original_price: originalPrice,
-                    discount_price: discountPrice,
-                    discount_percent: percent,
-                    game_link: link
-                }
+                    var name = $(inElement).find(".title").text().trim();
+                    var releaseDate = $(inElement).find(".search_released").text();
+                    var reviews = $(inElement).find(".search_review_summary").attr("data-store-tooltip");
+                    var image = $(inElement).find(".search_capsule > img").attr("src");
+                    // console.log(reviews)
+                    // console.log("")
+                    // console.log(name)
+                    var percent = $(inElement).find(".search_discount > span").text()
+                    // console.log(percent)
+                    // name = name.trim();
 
 
-                // method to use mongoose as simple upsert breaks due to constructor creating an id, which is immutable
-                // Setup stuff
-                var query = { game_name: game.game_name },
-                    update = {
+                    //just recalc the percent
+                    percent = Number(percent.substring(0, percent.length - 1).substring(1))
+
+                    //prices are contained in same element, need to split
+                    var price = $(inElement).find(".discounted").text().trim()
+                    var prices = price.split("$");
+                    var originalPrice = Number(prices[1]);
+                    var discountPrice = Number(prices[2]);
+                    
+                    var goodDeal = false;
+                    if(percent > 74) {
+                        goodDeal = true;
+                    }
+
+
+                    var game = {
+                        game_name: name,
+                        game_reviews: reviews,
+                        game_image: image,
+                        good_deal: goodDeal,
+                        release_date: releaseDate,
                         original_price: originalPrice,
                         discount_price: discountPrice,
-                        discount_percent: percent
-                    },
-                    options = { upsert: false };
+                        discount_pct: percent,
+                        game_link: link
+                    }
 
-                if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
-                    // Find the document
-                    Sale.findOneAndUpdate(query, update, options, function (error, entry) {
-                        if (!error) {
-                            // If the document doesn't exist
-                            if (!entry) {
-                                // Create it
-                                entry = new Sale(game);
-                            }
-                            // Save the document
-                            entry.save(function (error) {
-                                if (!error) {
-                                    // Do something with the document
-                                } else {
-                                    throw error;
+
+                    // method to use mongoose as simple upsert breaks due to constructor creating an id, which is immutable
+                    // Setup stuff
+
+                    var query = { game_name: game.game_name },
+                        update = {
+                            original_price: originalPrice,
+                            discount_price: discountPrice,
+                            discount_percent: percent
+                        },
+                        options = { upsert: false };
+
+                    // var result = {};
+
+                    // Add the text and href of every link, and save them as properties of the result object
+                    // result.game_name = name;
+                    // result.link = $(this).children("a").attr("href");
+
+                    // Using our Article model, create a new entry
+                    // This effectively passes the result object to the entry (and the title and link)
+                    // var entry = new Sale(game);
+
+                    // // Now, save that entry to the db
+                    // entry.save(function (err, doc) {
+                    //     // Log any errors
+                    //     if (err) {
+                    //         console.log(err);
+                    //     }
+                    //     // Or log the doc
+                    //     else {
+                    //         console.log(doc);
+                    //     }
+                    // });
+
+                    if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
+                        // Find the document
+                        Sale.findOneAndUpdate(query, update, options, function (error, entry) {
+                            if (!error) {
+                                // If the document doesn't exist
+                                if (!entry) {
+                                    // Create it
+                                    entry = new Sale(game);
                                 }
-                            });
-                        }
-                    });
-                }
-
-                //original method which should work in normal mongo?
-                // if (name != "" && percent != "") {
-                //     Sale.findOneAndUpdate({ game_link: game.game_link }, entry, { upsert: true }, function (err, doc) {
-                //         if (err) return res.send(500, { error: err });
-
-                //     });
-                // }
-
+                                // Save the document
+                                entry.save(function (error) {
+                                    if (!error) {
+                                        // Do something with the document
+                                    } else {
+                                        throw error;
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
             });
         });
-    });
+        console.log(n+ " is complete");
+    }
 });
+// });
+
+
+
+//orgininal
+
+// app.get("/findSales", function (req, res) {
+//     request("http://store.steampowered.com/", function (error, response, html) {
+//         var $ = cheerio.load(html);
+//         var result = [];
+//         $("#tab_specials_content").each(function (i, element) {
+//             $("a.tab_item").each(function (j, inElement) {
+
+//                 var link = $(this).attr("href");
+
+//                 var originalPrice = $(inElement).find(".discount_original_price").text()
+//                 var discountPrice = $(inElement).find(".discount_final_price").text()
+//                 var name = $(inElement).find(".tab_item_name").text().trim()
+//                 var percent = Number($(inElement).find(".discount_pct").text())
+//                 name = name.trim();
+
+//                 originalPrice = Number(originalPrice.replace(/[^0-9\.]+/g, ""));
+//                 discountPrice = Number(discountPrice.replace(/[^0-9\.]+/g, ""));
+
+//                 var game = {
+//                     game_name: name,
+//                     original_price: originalPrice,
+//                     discount_price: discountPrice,
+//                     discount_percent: percent,
+//                     game_link: link
+//                 }
+
+
+//                 // method to use mongoose as simple upsert breaks due to constructor creating an id, which is immutable
+//                 // Setup stuff
+//                 var query = { game_name: game.game_name },
+//                     update = {
+//                         original_price: originalPrice,
+//                         discount_price: discountPrice,
+//                         discount_percent: percent
+//                     },
+//                     options = { upsert: false };
+
+//                 if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
+//                     // Find the document
+//                     Sale.findOneAndUpdate(query, update, options, function (error, entry) {
+//                         if (!error) {
+//                             // If the document doesn't exist
+//                             if (!entry) {
+//                                 // Create it
+//                                 entry = new Sale(game);
+//                             }
+//                             // Save the document
+//                             entry.save(function (error) {
+//                                 if (!error) {
+//                                     // Do something with the document
+//                                 } else {
+//                                     throw error;
+//                                 }
+//                             });
+//                         }
+//                     });
+//                 }
+
+//                 //original method which should work in normal mongo?
+//                 // if (name != "" && percent != "") {
+//                 //     Sale.findOneAndUpdate({ game_link: game.game_link }, entry, { upsert: true }, function (err, doc) {
+//                 //         if (err) return res.send(500, { error: err });
+
+//                 //     });
+//                 // }
+
+//             });
+//         });
+//     });
+// });
 
 
 // Serve index.handlebars to the root route.
