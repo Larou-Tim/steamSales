@@ -1,0 +1,31 @@
+{{!--<div class="container align center">
+  <a class="waves-effect waves-light btn">Cheapest</a>
+  <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Best Discounts</a>
+  <a class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Best Ratings</a>
+  <a class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Best Games</a>
+</div>--}}
+<br>
+<div class="container">
+  <div class="row" id="saleContainer">
+    {{!--
+    <div class="col s8">--}}
+      <ul class="collapsible popout" data-collapsible="accordion">
+        {{#each deals}} 
+
+{{!-- maybe add icon if its high rated, good deal? ect <i class="material-icons">filter_drama</i>--}}
+        <li>
+          <div class="collapsible-header">{{this.game_name}} <span class="right"> ${{this.discount_price}} </span></div>
+          <div class="collapsible-body"><span>
+            <a class="waves-effect waves-light btn" target="_blank" href={{this.game_link}}>Go to Steam</a>
+            it is {{this.discount_pct}} off right now!
+            </span></div>
+        </li>
+
+
+
+        {{/each}}
+      </ul>
+
+      {{!--</div>--}}
+  </div>
+</div>
