@@ -88,13 +88,12 @@ app.get("/findSales", function (req, res) {
                     var releaseDate = $(inElement).find(".search_released").text();
                     var reviews = $(inElement).find(".search_review_summary").attr("data-store-tooltip");
                     var image = $(inElement).find(".search_capsule > img").attr("src");
-                    // console.log(reviews)
-                    // console.log("")
-                    // console.log(name)
-                    var percent = $(inElement).find(".search_discount > span").text()
-                    // console.log(percent)
-                    // name = name.trim();
+                    var percent = $(inElement).find(".search_discount > span").text();
 
+                    var gameDesc;
+
+                    //i probably don't need the array for the promise all, but will start with this
+                    var gameDesLinks = [link]
 
                     //just recalc the percent
                     percent = Number(percent.substring(0, percent.length - 1).substring(1))
@@ -104,83 +103,81 @@ app.get("/findSales", function (req, res) {
                     var prices = price.split("$");
                     var originalPrice = Number(prices[1]);
                     var discountPrice = Number(prices[2]);
-                    
+
                     var goodDeal = false;
-                    if(percent > 74) {
+                    if (percent > 74) {
                         goodDeal = true;
                     }
 
+                    // current second request, not a good place
 
-                    var game = {
-                        game_name: name,
-                        game_reviews: reviews,
-                        game_image: image,
-                        good_deal: goodDeal,
-                        release_date: releaseDate,
-                        original_price: originalPrice,
-                        discount_price: discountPrice,
-                        discount_pct: percent,
-                        game_link: link
-                    }
+                    Promise.all(gameDesLinks.map(gameDescription => new Promise((resolve, reject) => {
+                        request.get(gameDesLinks[0], (error, response, html) => {
 
+                            if (error) {
+                                return reject(error);
+                            }
 
-                    // method to use mongoose as simple upsert breaks due to constructor creating an id, which is immutable
-                    // Setup stuff
+                            var $ = cheerio.load(html);
+                            // console.log("link is", gameDesLinks[0])
+                            // #game_highlights > div.rightcol > div > div.game_description_snippet
+                            gameDesc = $("#game_highlights > div.rightcol > div > div.game_description_snippet").text().trim();
 
-                    var query = { game_name: game.game_name },
-                        update = {
+                            return resolve(res, html);
+                        });
+                    }))).then(function (data) {
+
+                        // console.log(gameDesc)
+                        var game = {
+                            game_name: name,
+                            game_reviews: reviews,
+                            game_image: image,
+                            good_deal: goodDeal,
+                            game_description: gameDesc,
+                            release_date: releaseDate,
                             original_price: originalPrice,
                             discount_price: discountPrice,
-                            discount_percent: percent
-                        },
-                        options = { upsert: false };
+                            discount_pct: percent,
+                            game_link: link
+                        }
 
-                    // var result = {};
 
-                    // Add the text and href of every link, and save them as properties of the result object
-                    // result.game_name = name;
-                    // result.link = $(this).children("a").attr("href");
+                        // method to use mongoose as simple upsert breaks due to constructor creating an id, which is immutable
+                        // Setup stuff
 
-                    // Using our Article model, create a new entry
-                    // This effectively passes the result object to the entry (and the title and link)
-                    // var entry = new Sale(game);
+                        var query = { game_name: game.game_name },
+                            update = {
+                                original_price: game.original_price,
+                                discount_price: game.discount_price,
+                                discount_percent: game.discount_pct
+                            },
+                            options = { upsert: false };
 
-                    // // Now, save that entry to the db
-                    // entry.save(function (err, doc) {
-                    //     // Log any errors
-                    //     if (err) {
-                    //         console.log(err);
-                    //     }
-                    //     // Or log the doc
-                    //     else {
-                    //         console.log(doc);
-                    //     }
-                    // });
-
-                    if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
-                        // Find the document
-                        Sale.findOneAndUpdate(query, update, options, function (error, entry) {
-                            if (!error) {
-                                // If the document doesn't exist
-                                if (!entry) {
-                                    // Create it
-                                    entry = new Sale(game);
-                                }
-                                // Save the document
-                                entry.save(function (error) {
-                                    if (!error) {
-                                        // Do something with the document
-                                    } else {
-                                        throw error;
+                        if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
+                            // Find the document
+                            Sale.findOneAndUpdate(query, update, options, function (error, entry) {
+                                if (!error) {
+                                    // If the document doesn't exist
+                                    if (!entry) {
+                                        // Create it
+                                        entry = new Sale(game);
                                     }
-                                });
-                            }
-                        });
-                    }
+                                    // Save the document
+                                    entry.save(function (error) {
+                                        if (!error) {
+                                            // Do something with the document
+                                        } else {
+                                            throw error;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
                 });
             });
         });
-        console.log(n+ " is complete");
+        console.log(n + " is complete");
     }
 });
 // });

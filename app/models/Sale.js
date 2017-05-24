@@ -32,6 +32,10 @@ var SaleSchema = new Schema({
         // required: true
     },
 
+    game_description: {
+        type: String
+    },
+
     original_price: {
         type: Number
         // required: true
@@ -44,7 +48,7 @@ var SaleSchema = new Schema({
         type: Number
         // required: true
     },
-    
+
     good_deal: {
         type: Boolean
     },

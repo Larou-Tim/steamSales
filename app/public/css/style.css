@@ -1,7 +1,31 @@
 body{
-  background-color: gray;
+  background-color: #000;
 }
 
 i.icon-orange {
     color: orange;
 }
+
+
+#data-body {
+    background: #051D44; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(#051D44, #385583); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#051D44, #385583); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#051D44, #385583); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#051D44, #385583); /* Standard syntax */
+}
+
+.header-section {
+    color: #456FB2;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);}
+
+#game-details {
+  background-color: #000;
+  color: #fff;
+}
+    /*.header-title.header-title*/
+
