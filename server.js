@@ -29,7 +29,9 @@ app.set("view engine", "handlebars");
 app.use(express.static("./app/public"));
 
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/steam_sales");
+// mongoose.connect("mongodb://localhost/steam_sales");
+
+ mongoose.connect("mongodb://heroku_cqmp3frb:ifa5bamtt4nu7fece1hqq584kg@ds153501.mlab.com:53501/heroku_cqmp3frb");
 var db = mongoose.connection;
 
 // Show any mongoose errors

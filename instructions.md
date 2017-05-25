@@ -29,6 +29,7 @@ In this assignment, you'll create a web app that lets users leave comments on th
 13. You'll need to find the URI string that connects Mongoose to mLab. Run this command to grab that string: 
     * `heroku config | grep MONGODB_URI`
     * Notice the value that appears after `MONGODB_URI =>`. This is your URI string. Copy it to a document for safekeeping.
+    mongodb://heroku_cqmp3frb:ifa5bamtt4nu7fece1hqq584kg@ds153501.mlab.com:53501/heroku_cqmp3frb
 14. When you’re ready to connect Mongoose with your remote database, simply paste the URI string as the lone argument of your `mongoose.connect()` function. That’s it!
 
 15. [Watch this demo of a possible submission](Week-18-Homework-Video.mov). 
