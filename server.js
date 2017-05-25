@@ -29,9 +29,9 @@ app.set("view engine", "handlebars");
 app.use(express.static("./app/public"));
 
 // Database configuration with mongoose
-// mongoose.connect("mongodb://localhost/steam_sales");
+mongoose.connect("mongodb://localhost/steam_sales");
 
- mongoose.connect("mongodb://heroku_cqmp3frb:ifa5bamtt4nu7fece1hqq584kg@ds153501.mlab.com:53501/heroku_cqmp3frb");
+// mongoose.connect("mongodb://heroku_cqmp3frb:ifa5bamtt4nu7fece1hqq584kg@ds153501.mlab.com:53501/heroku_cqmp3frb");
 var db = mongoose.connection;
 
 // Show any mongoose errors
@@ -128,16 +128,16 @@ app.get("/findSales", function (req, res) {
                             largeImage = $("#game_highlights > div.rightcol > div > div.game_header_image_ctn > img").attr("src")
                             $("#game_highlights > div.rightcol > div > div.glance_ctn_responsive_right > div > div.glance_tags.popular_tags > a").each(function (j, tagElements) {
                                 var currentTag = $(this).text();
-                    
-                                currentTag = currentTag.replace(/\t/g,"");
-                                currentTag = currentTag.replace("\r","");
-                                currentTag = currentTag.replace("\n","");
+
+                                currentTag = currentTag.replace(/\t/g, "");
+                                currentTag = currentTag.replace("\r", "");
+                                currentTag = currentTag.replace("\n", "");
                                 //chracters removed to make it easy to do datavalues
                                 /*Orginally attempted to have div hoverbox for each element using handlebars to populate, 
                                 positioning easy fix is single hoverbox that is jquery developed due to realtive position issues not 
                                 sizing box correctly*/
-                                currentTag = currentTag.replace(" ","-");
-                                currentTag = currentTag.replace("&","");
+                                currentTag = currentTag.replace(" ", "-");
+                                currentTag = currentTag.replace("&", "");
                                 gameTags.push(currentTag);
                             });
                             return resolve(res, html);
@@ -202,81 +202,6 @@ app.get("/findSales", function (req, res) {
 // });
 
 
-
-//orgininal
-
-// app.get("/findSales", function (req, res) {
-//     request("http://store.steampowered.com/", function (error, response, html) {
-//         var $ = cheerio.load(html);
-//         var result = [];
-//         $("#tab_specials_content").each(function (i, element) {
-//             $("a.tab_item").each(function (j, inElement) {
-
-//                 var link = $(this).attr("href");
-
-//                 var originalPrice = $(inElement).find(".discount_original_price").text()
-//                 var discountPrice = $(inElement).find(".discount_final_price").text()
-//                 var name = $(inElement).find(".tab_item_name").text().trim()
-//                 var percent = Number($(inElement).find(".discount_pct").text())
-//                 name = name.trim();
-
-//                 originalPrice = Number(originalPrice.replace(/[^0-9\.]+/g, ""));
-//                 discountPrice = Number(discountPrice.replace(/[^0-9\.]+/g, ""));
-
-//                 var game = {
-//                     game_name: name,
-//                     original_price: originalPrice,
-//                     discount_price: discountPrice,
-//                     discount_percent: percent,
-//                     game_link: link
-//                 }
-
-
-//                 // method to use mongoose as simple upsert breaks due to constructor creating an id, which is immutable
-//                 // Setup stuff
-//                 var query = { game_name: game.game_name },
-//                     update = {
-//                         original_price: originalPrice,
-//                         discount_price: discountPrice,
-//                         discount_percent: percent
-//                     },
-//                     options = { upsert: false };
-
-//                 if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
-//                     // Find the document
-//                     Sale.findOneAndUpdate(query, update, options, function (error, entry) {
-//                         if (!error) {
-//                             // If the document doesn't exist
-//                             if (!entry) {
-//                                 // Create it
-//                                 entry = new Sale(game);
-//                             }
-//                             // Save the document
-//                             entry.save(function (error) {
-//                                 if (!error) {
-//                                     // Do something with the document
-//                                 } else {
-//                                     throw error;
-//                                 }
-//                             });
-//                         }
-//                     });
-//                 }
-
-//                 //original method which should work in normal mongo?
-//                 // if (name != "" && percent != "") {
-//                 //     Sale.findOneAndUpdate({ game_link: game.game_link }, entry, { upsert: true }, function (err, doc) {
-//                 //         if (err) return res.send(500, { error: err });
-
-//                 //     });
-//                 // }
-
-//             });
-//         });
-//     });
-// });
-
-
 // Serve index.handlebars to the root route.
 app.get("/", function (req, res) {
     Sale.find({}, function (err, data) {
@@ -288,59 +213,81 @@ app.get("/", function (req, res) {
     });
 });
 
+
 //A to Z
-app.get("/alpha", function (req, res) {
+app.get("/alpha/:page", function (req, res) {
+    // var skipAmount = req.params.page;
+    // skipAmount = (skipAmount - 1) * 30
+    var curUrl = req.url;
+    sortPull("game_name", "asc", req.params.page, res, curUrl);
+    //    var perPage = 25
+    //   , page = Math.max(0, req.params.page -1);
 
-    // .find(query, fields, { skip: 10, limit: 5 }
-    Sale.find({}).sort({ game_name: 1 }).exec(
+    //     Sale.find()
+    //     .limit(perPage)
+    //     .skip(perPage * page)
+    //     .sort({
+    //         game_name: 'asc'
+    //     }).exec(
 
-        function (err, data) {
+    //     // Sale.find({}).sort({ game_name: 1 }).skip(30).limit(skipAmount).exec(
 
-            if (err) {
-                throw err;
-            }
-            res.render("index", { deals: data });
-        });
+    //         function (err, data) {
+
+    //             if (err) {
+    //                 throw err;
+    //             }
+    //             res.render("index", { deals: data });
+    //         });
 });
 
 //Z to A
-app.get("/zeta", function (req, res) {
-    Sale.find({}).sort({ game_name: -1 }).exec(
+app.get("/zeta/:page", function (req, res) {
+        var curUrl = req.url;
+    sortPull("game_name", "desc", req.params.page, res, curUrl);
 
-        function (err, data) {
+    // Sale.find({}).sort({ game_name: -1 }).exec(
 
-            if (err) {
-                throw err;
-            }
-            res.render("index", { deals: data });
-        });
+    //     function (err, data) {
+
+    //         if (err) {
+    //             throw err;
+    //         }
+    //         res.render("index", { deals: data });
+    //     });
 });
 
 
 
 //cheapest
-app.get("/cheapest", function (req, res) {
-    Sale.find({}).sort({ discount_price: 1 }).exec(
+app.get("/cheapest/:page", function (req, res) {
+        var curUrl = req.url;
+    sortPull("discount_price", "asc", req.params.page, res, curUrl);
 
-        function (err, data) {
+    // Sale.find({}).sort({ discount_price: 1 }).exec(
 
-            if (err) {
-                throw err;
-            }
-            res.render("index", { deals: data });
-        });
+    //     function (err, data) {
+
+    //         if (err) {
+    //             throw err;
+    //         }
+    //         res.render("index", { deals: data });
+    //     });
 });
 //highest discount percents
-app.get("/bestdiscount", function (req, res) {
-    Sale.find({}).sort({ discount_pct: -1 }).exec(
+app.get("/bestdiscount/:page", function (req, res) {
+        var curUrl = req.url;
+    sortPull("discount_pct", "desc", req.params.page, res, curUrl);
 
-        function (err, data) {
+    // Sale.find({}).sort({ discount_pct: -1 }).exec(
 
-            if (err) {
-                throw err;
-            }
-            res.render("index", { deals: data });
-        });
+    //     function (err, data) {
+
+    //         if (err) {
+    //             throw err;
+    //         }
+    //         res.render("index", { deals: data });
+    //     });
 });
 
 app.listen(PORT, function () {
@@ -349,3 +296,35 @@ app.listen(PORT, function () {
 
 
 
+function sortPull(field, type, pageNumber, res, currentPath) {
+    var sortQuery = {
+        [field]: type
+    }
+
+    var curPathArr = currentPath.split("/")
+    var pathArr = []
+    //can dynamically create the upper limit based on results in db
+    for (var i = 1; i < 6; i++) {
+        pathArr.push(
+            {
+                path: "/" + curPathArr[1] + "/" + i,
+                pathNum: i
+            });
+    }
+
+    var perPage = 25
+        , page = Math.max(0, pageNumber - 1);
+
+    Sale.find()
+        .limit(perPage)
+        .skip(perPage * page)
+        .sort(sortQuery).exec(
+
+        function (err, data) {
+
+            if (err) {
+                throw err;
+            }
+            res.render("index", { deals: data, paths: pathArr });
+        });
+}
