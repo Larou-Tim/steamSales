@@ -1,43 +1,65 @@
-{{!--
-<div class="container align center">
-  <a class="waves-effect waves-light btn">Cheapest</a>
-  <a class="waves-effect waves-light btn"><i class="material-icons left">cloud</i>Best Discounts</a>
-  <a class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Best Ratings</a>
-  <a class="waves-effect waves-light btn"><i class="material-icons right">cloud</i>Best Games</a>
-</div>--}}
+<br>
+<ul class="pagination center-align">
+  <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+  <li class="active"><a href="#!">1</a></li>
+  <li class="waves-effect"><a href="#!">2</a></li>
+  <li class="waves-effect"><a href="#!">3</a></li>
+  <li class="waves-effect"><a href="#!">4</a></li>
+  <li class="waves-effect"><a href="#!">5</a></li>
+  <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+</ul>
 <br>
 <div class="container">
   <div class="row" id="saleContainer">
-    {{!--
-    <div class="col s8">--}}
-      <ul class="collapsible popout" data-collapsible="accordion">
-        {{#each deals}} {{!-- maybe add icon if its high rated, good deal? ect <i class="material-icons">filter_drama</i>--}}
-        <li>
-          <div class="collapsible-header">{{this.game_name}} <span class="right"> {{#if this.good_deal}}  <i class="material-icons icon-orange">whatshot</i>  {{/if}} ${{this.discount_price}} </span></div>
-          <div class="collapsible-body" id="game-details">
-            <div class="row">
-              <div class="col s2">
-                <img src={{this.game_image}} alt="game image">
-              </div>
-              <div class="col s8">
-                <p> {{#unless this.game_description}} Description is unavailable, please go to steam for more details. {{/unless}} {{this.game_description}}</p>
-                
-              </div>
-              <div class="col s2">
-                <a class="waves-effect waves-light btn right" target="_blank" href={{this.game_link}}>Go to Steam</a>
 
+    <ul class="collapsible popout" data-collapsible="accordion">
+      {{#each deals}}
+      <li>
+
+        <div class="collapsible-header  blue darken-4">
+          <div class="row">
+            <div class="col s9">{{this.game_name}}</div>
+            <div class="col s1">
+              <div class="chip game-tag-show" id="tag-test"> Tags
+                <div class="hover-box center-align">
+                  {{#each this.game_tags}}
+                  <div class="chip game-tag"> {{this}} </div>
+                  {{/each}}
+                </div>
               </div>
             </div>
 
+            <div class="col s1">
+              {{#if this.good_deal}} <i class="material-icons icon-orange right">whatshot</i> {{/if}}
+            </div>
 
+            <div class="col s1">
+              <div class="right">
+                ${{this.discount_price}}
+              </div>
+            </div>
           </div>
-        </li>
+        </div>
 
+        <div class="collapsible-body" id="game-details">
+          <div class="row">
+            <div class="col s2">
+              <img class="game-img" src={{this.game_image_large}} alt="game image">
+            </div>
+            <div class="col s8">
+              <p class="game-description"> {{#unless this.game_description}} Description is unavailable, please go to steam for more details. {{/unless}}
+                {{this.game_description}}
+              </p>
 
+            </div>
+            <div class="col s2">
+              <a class="waves-effect waves-light btn right" target="_blank" href={{this.game_link}}>Steam</a>
+            </div>
+          </div>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
 
-        {{/each}}
-      </ul>
-
-      {{!--</div>--}}
   </div>
 </div>

@@ -27,9 +27,13 @@ var SaleSchema = new Schema({
         // required: true
     },
 
-    game_image: {
+    game_image_small: {
         type: String
         // required: true
+    },
+
+    game_image_large: {
+        type: String
     },
 
     game_description: {
@@ -51,6 +55,9 @@ var SaleSchema = new Schema({
 
     good_deal: {
         type: Boolean
+    },
+    game_tags: {
+        type: []
     },
     // This only saves one note's ObjectId, ref refers to the Note model
     note: {

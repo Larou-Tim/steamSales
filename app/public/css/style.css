@@ -6,6 +6,26 @@ i.icon-orange {
     color: orange;
 }
 
+#saleContainer{
+  color:#fff;
+}
+
+#menu-button {
+  top:23px;
+  right:23px;
+}
+
+.game-img {
+  height:75px;
+  width: 125px;
+
+}
+
+
+.game-description {
+  margin:0;
+
+}
 
 #data-body {
     background: #051D44; /* For browsers that do not support gradients */
@@ -16,9 +36,14 @@ i.icon-orange {
 }
 
 .header-section {
-    color: #456FB2;
+    color: #FFF;
+    text-shadow:
+   -1px -1px 0 #000,  
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+     1px 1px 0 #000;
     text-align: center;
-    top: 50%;
+    top: 30%;
     left: 50%;
     position: absolute;
     transform: translate(-50%, -50%);}
@@ -27,5 +52,29 @@ i.icon-orange {
   background-color: #000;
   color: #fff;
 }
-    /*.header-title.header-title*/
+.collapsible-header{
+  position:relative;
+}
+.hover-box{
+  z-index: 50;
+  
+  padding: 10px 10px 10px 10px;
+  position:absolute;
+  right:-150px;
+  max-width:300px;
+  top:-20px;
+  background-color:#000;
+ 
+  display:none;
+  border: 2px solid #80deea;
+    border-radius: 5px;
+}
 
+
+#slide-out li>a {
+  color: #fff;
+}
+
+/*#tag-test{
+  position: relative;
+}*/

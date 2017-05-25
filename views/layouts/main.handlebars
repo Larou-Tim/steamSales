@@ -16,7 +16,8 @@
 <body>
 
 	{{!--slide bar nav bar--}}
-	<ul id="slide-out" class="side-nav">
+
+	<ul id="slide-out" class="side-nav black">
 		<li>
 			<div class="userView">
 				<div class="background">
@@ -32,14 +33,15 @@
 			<div class="divider"></div>
 		</li>
 		<li><a class="subheader">Sorts</a></li>
-		<li><a href="/alpha">A -> Z</a></li>
-		<li><a href="/zeta">Z -> A</a></li>
-		<li><a href="/cheapest">Cheapest</a></li>
-		<li><a href="/bestdiscount">Best Discounts</a></li>
+		<li><a class="waves-effect" href="/alpha">A -> Z</a></li>
+		<li><a class="waves-effect" href="/zeta">Z -> A</a></li>
+		<li><a class="waves-effect" href="/cheapest">Cheapest</a></li>
+		<li><a class="waves-effect" href="/bestdiscount">Best Discounts</a></li>
 		<li><a class="waves-effect" href="#!">Third Link With Waves</a></li>
 	</ul>
+
 	{{!--<a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>--}}
-	<div class="fixed-action-btn">
+	<div class="fixed-action-btn" id="menu-button">
 		<a data-activates="slide-out" class="btn-floating btn-large waves-effect waves-light blue-gray button-collapse"><i class="material-icons">menu</i></a>
 
 	</div>
@@ -64,7 +66,7 @@
 	</div>
 
 
-
+	
 
 
 </body>

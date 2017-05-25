@@ -91,6 +91,7 @@ app.get("/findSales", function (req, res) {
                     var percent = $(inElement).find(".search_discount > span").text();
 
                     var gameDesc;
+                    var gameTags = [];
 
                     //i probably don't need the array for the promise all, but will start with this
                     var gameDesLinks = [link]
@@ -122,7 +123,21 @@ app.get("/findSales", function (req, res) {
                             // console.log("link is", gameDesLinks[0])
                             // #game_highlights > div.rightcol > div > div.game_description_snippet
                             gameDesc = $("#game_highlights > div.rightcol > div > div.game_description_snippet").text().trim();
-
+                            largeImage = $("#game_highlights > div.rightcol > div > div.game_header_image_ctn > img").attr("src")
+                            $("#game_highlights > div.rightcol > div > div.glance_ctn_responsive_right > div > div.glance_tags.popular_tags > a").each(function (j, tagElements) {
+                                var currentTag = $(this).text();
+                    
+                                currentTag = currentTag.replace(/\t/g,"");
+                                currentTag = currentTag.replace("\r","");
+                                currentTag = currentTag.replace("\n","");
+                                //chracters removed to make it easy to do datavalues
+                                /*Orginally attempted to have div hoverbox for each element using handlebars to populate, 
+                                positioning easy fix is single hoverbox that is jquery developed due to realtive position issues not 
+                                sizing box correctly*/
+                                currentTag = currentTag.replace(" ","-");
+                                currentTag = currentTag.replace("&","");
+                                gameTags.push(currentTag);
+                            });
                             return resolve(res, html);
                         });
                     }))).then(function (data) {
@@ -131,8 +146,10 @@ app.get("/findSales", function (req, res) {
                         var game = {
                             game_name: name,
                             game_reviews: reviews,
-                            game_image: image,
+                            game_image_small: image,
+                            game_image_large: largeImage,
                             good_deal: goodDeal,
+                            game_tags: gameTags,
                             game_description: gameDesc,
                             release_date: releaseDate,
                             original_price: originalPrice,
@@ -271,6 +288,8 @@ app.get("/", function (req, res) {
 
 //A to Z
 app.get("/alpha", function (req, res) {
+
+    // .find(query, fields, { skip: 10, limit: 5 }
     Sale.find({}).sort({ game_name: 1 }).exec(
 
         function (err, data) {
