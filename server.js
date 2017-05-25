@@ -14,7 +14,7 @@ var app = express();
 app.use(bodyParser.urlencoded({
     extended: false
 }));
-
+var PORT = process.env.PORT || 3000;
 
 // Parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -343,7 +343,7 @@ app.get("/bestdiscount", function (req, res) {
         });
 });
 
-app.listen(3000, function () {
+app.listen(PORT, function () {
     console.log("App running on port 3000!");
 });
 
