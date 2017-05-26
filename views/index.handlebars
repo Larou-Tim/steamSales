@@ -1,13 +1,13 @@
 <br>
-<ul class="pagination center-align">
+<ul class="pagination center-align" >
   <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
   {{#each paths}}
-  <li class="waves-effect"><a href={{this.path}}>{{this.pathNum}}</a></li>
+  <li class="waves-effect"  ><a class="cyan-text" href={{this.path}}>{{this.pathNum}}</a></li>
   
   {{/each}}
 
-
-  {{!--<li class="active"><a href= "/" + {{path}} + "/1">1</a></li>
+{{!--add active compoented--}}
+  {{!--<li class="active cyan"><a href= "/" + {{path}} + "/1">1</a></li>
   <li class="waves-effect"><a href= {{path}} + "/2">2</a></li>
   <li class="waves-effect"><a href= {{path}} + "/3">3</a></li>
   <li class="waves-effect"><a href= {{path}} +  "/4">4</a></li>

@@ -74,7 +74,9 @@ i.icon-orange {
 #slide-out li>a {
   color: #fff;
 }
-
+#query-pagination {
+  color: #80deea;
+}
 /*#tag-test{
   position: relative;
 }*/
