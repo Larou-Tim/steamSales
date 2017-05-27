@@ -52,12 +52,13 @@ app.get("/findSales", function (req, res) {
     res.render("load")
     var gameCount = 0;
     var completed = 0;
+    var allPromises = [];
     for (var n = 1; n <= 5; n++) {
         request("http://store.steampowered.com/search/?specials=1&page=" + n, function (error, response, html) {
             var $ = cheerio.load(html);
             var result = [];
             $("#search_result_container > div:nth-child(2)").each(function (i, element) {
-                $(".search_result_row").each(function (j, inElement) {     
+                $(".search_result_row").each(function (j, inElement) {
                     gameCount++;
                     console.log(gameCount)
                     var link = $(this).attr("href");
@@ -73,6 +74,8 @@ app.get("/findSales", function (req, res) {
 
                     //i probably don't need the array for the promise all, but will start with this
                     var gameDesLinks = [link]
+                    //used to determine when everything is done to refresh
+                    
 
                     //just recalc the percent
                     percent = Number(percent.substring(0, percent.length - 1).substring(1))
@@ -96,9 +99,9 @@ app.get("/findSales", function (req, res) {
                             if (error) {
                                 return reject(error);
                             }
-
+                        
                             var $ = cheerio.load(html);
-
+                            
                             gameDesc = $("#game_highlights > div.rightcol > div > div.game_description_snippet").text().trim();
                             largeImage = $("#game_highlights > div.rightcol > div > div.game_header_image_ctn > img").attr("src")
                             $("#game_highlights > div.rightcol > div > div.glance_ctn_responsive_right > div > div.glance_tags.popular_tags > a").each(function (j, tagElements) {
@@ -158,8 +161,9 @@ app.get("/findSales", function (req, res) {
                                 game_link: link
                             },
                             options = { upsert: false };
-                            completed++
-                            console.log("done with:",completed)
+                        completed++
+                        allPromises.push(completed);
+                        console.log("done with:", completed)
                         if (name != "" && percent != "" && originalPrice != "" && discountPrice != "" && percent != "" && link != "") {
                             // Find the document
                             Sale.findOneAndUpdate(query, update, options, function (error, entry) {
@@ -185,7 +189,21 @@ app.get("/findSales", function (req, res) {
             });
         });
     }
- 
+    // Promise.all(allPromises)
+    
+    //     .then(function () {
+    //         console.log("Done")
+    //     //     Sale.find()
+    //     //         .populate("note")
+    //     //         .exec(
+    //     //         function (err, data) {
+
+    //     //             if (err) {
+    //     //                 throw err;
+    //     //             }
+    //     //             res.render("index", { deals: data });
+    //     //         });
+    //     });
 });
 // });
 
