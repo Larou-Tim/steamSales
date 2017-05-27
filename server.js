@@ -74,8 +74,7 @@ app.get("/findSales", function (req, res) {
 
                     //i probably don't need the array for the promise all, but will start with this
                     var gameDesLinks = [link]
-                    //used to determine when everything is done to refresh
-                    
+                    //used to determine when everything is done to refresh                
 
                     //just recalc the percent
                     percent = Number(percent.substring(0, percent.length - 1).substring(1))
