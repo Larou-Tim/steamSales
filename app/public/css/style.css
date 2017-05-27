@@ -21,7 +21,6 @@ i.icon-orange {
 
 }
 
-
 .game-description {
   margin:0;
 
@@ -57,7 +56,6 @@ i.icon-orange {
 }
 .hover-box{
   z-index: 50;
-  
   padding: 10px 10px 10px 10px;
   position:absolute;
   right:-150px;
@@ -70,6 +68,9 @@ i.icon-orange {
     border-radius: 5px;
 }
 
+#saleContainer > ul > li{
+  margin:0;
+}
 
 #slide-out li>a {
   color: #fff;
@@ -77,6 +78,13 @@ i.icon-orange {
 #query-pagination {
   color: #80deea;
 }
-/*#tag-test{
-  position: relative;
-}*/
+
+
+#game_name_search {
+  color:#80deea;
+}
+
+#note-save {
+  margin-right:20px;
+}
+

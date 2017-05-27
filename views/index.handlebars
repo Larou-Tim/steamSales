@@ -1,37 +1,36 @@
-<br>
-<ul class="pagination center-align" >
-  {{!--<li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>--}}
-  {{#each paths}}
-  <li class="waves-effect"  ><a class="cyan-text" href={{this.path}}>{{this.pathNum}}</a></li>
-  
-  {{/each}}
-
-{{!--add active compoented--}}
-  {{!--<li class="active cyan"><a href= "/" + {{path}} + "/1">1</a></li>
-  <li class="waves-effect"><a href= {{path}} + "/2">2</a></li>
-  <li class="waves-effect"><a href= {{path}} + "/3">3</a></li>
-  <li class="waves-effect"><a href= {{path}} +  "/4">4</a></li>
-  <li class="waves-effect"><a href= {{path}} + "/5">5</a></li>--}}
-  {{!--<li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>--}}
-</ul>
-<br>
 <div class="container">
-  <div class="row" id="saleContainer">
+  <form class="col s12" id="name-form">
+    <div class="row">
+      <div class="input-field col s4">
+        <input id="game_name_search" type="text" class="validate">
+        <label for="game_name_search">Game Name</label>
+      </div>
+      <div class="col s4">
+        <ul class="pagination center-align">
+          {{#each paths}}
+          <li class="waves-effect"><a class="cyan-text" href={{this.path}}>{{this.pathNum}}</a></li>
+          {{/each}} {{!--add active compoented--}} {{!--
+          <li class="active cyan"><a href="/" + {{path}} + "/1">1</a></li>--}}
+        </ul>
+      </div>
+    </div>
+  </form>
 
+  <div class="row" id="saleContainer">
     <ul class="collapsible popout" data-collapsible="accordion">
       {{#each deals}}
       <li>
-
         <div class="collapsible-header  blue darken-4">
           <div class="row">
             <div class="col s9">{{this.game_name}}</div>
             <div class="col s1">
-              <div class="chip game-tag-show" id="tag-test"> Tags
+              <div class="chip game-tag-show" id="tag-test"> Tags {{#if this.game_tags}}
                 <div class="hover-box center-align">
                   {{#each this.game_tags}}
                   <div class="chip game-tag"> {{this}} </div>
                   {{/each}}
                 </div>
+                {{/if}}
               </div>
             </div>
 
@@ -46,21 +45,71 @@
             </div>
           </div>
         </div>
-
         <div class="collapsible-body" id="game-details">
+
           <div class="row">
             <div class="col s2">
-              <img class="game-img" src={{this.game_image_large}} alt="game image">
+              <div class="row">
+                <img class="game-img" src={{#unless this.game_image_large}} {{this.game_image_small}} {{/unless}}{{this.game_image_large}}
+                  alt="game image">
+              </div>
+              <div class="row">
+                <p> {{this.release_date}} </p>
+              </div>
             </div>
-            <div class="col s8">
+            <div class="col s6 offset-s1">
               <p class="game-description"> {{#unless this.game_description}} Description is unavailable, please go to steam for more details. {{/unless}}
                 {{this.game_description}}
               </p>
 
             </div>
-            <div class="col s2">
-              <a class="waves-effect waves-light btn right" target="_blank" href={{this.game_link}}>Steam</a>
+
+            <div class="col s2 offset-s1">
+              {{#if this.game_reviews}}
+              <div class="row">
+
+                <p class="game-reviews"> Game is reviewed: {{this.game_reviews}} </p>
+              </div>
+              {{/if}}
+
+              <div class="row">
+
+                <a class="waves-effect waves-light btn" target="_blank" href={{this.game_link}}>Steam</a>
+              </div>
+
+
             </div>
+          </div>
+          {{!--this is for the homework--}}
+          <div class="row">
+            <form class="col s12 m6" id="note-form">
+              <div class="row">
+                <div class="input-field col s12">
+                  <textarea id="game-note-input" class="materialize-textarea"></textarea>
+                  <label for="game-note-input">Add a note</label>
+                </div>
+                <div class="row">
+
+                  <a class="waves-effect waves-light btn right" game-id={{this._id}} id="note-save">Add Note</a>
+                </div>
+              </div>
+            </form>
+
+            <div class="col s12 m6">
+              <div class="card teal darken-1">
+                <div class="card-content white-text">
+                  <span class="card-title">Game Note</span> 
+                  {{#if this.note}}
+                  <p id="current-game-note">{{this.note.body}}</p>
+                  {{/if}}
+                  {{#unless this.note}}
+                  <p id="current-game-note">No notes yet</p>
+                  {{/unless}}
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </div>
       </li>

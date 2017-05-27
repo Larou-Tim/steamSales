@@ -1,0 +1,31 @@
+<div id="load-modal" class="modal">
+    <div class="modal-content black">
+        <div class="row">
+            <div class="col s6 offset-s5" >
+                <div class="preloader-wrapper big active">
+                    <div class="spinner-layer spinner-blue-only">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="gap-patch">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript " src="../js/materialize.min.js "></script>
+<script type="text/javascript " src="../js/logic.js"></script>
+<script type="text/javascript " src="https://code.jquery.com/jquery-2.1.1.min.js "></script>
+<script>
+    $(document).ready(function () {
+        $('.modal').modal();
+        $('#load-modal').modal('open');
+    })
+
+</script>
